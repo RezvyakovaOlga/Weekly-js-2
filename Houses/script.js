@@ -3,7 +3,7 @@ const bucketsPlace = document.getElementById ('placeForBuckets')
 const housesArray = []
 const bucketsArray = []
 
-class house {
+class House {
     constructor (
 
         isItOnFire = false,
@@ -27,9 +27,15 @@ class house {
         this.HTMLtag.src = "./img/fire.jpg";
     }
 
+    putOutTheFire () {
+
+        this.isItOnFire = false;  
+        this.HTMLtag.src = "./img/usual.png";
+
+    }
 }
 
-class bucket {
+class Bucket {
     constructor (
 
         isItOnScreen = false,
@@ -49,11 +55,13 @@ class bucket {
 
     }
 
-    putOutTheFire () {
+    // putOutTheFire (house) {
 
-        this.isItOnScreen = true;
+    //     house.isItOnFire = false;
+    //     house.HTMLtag.src = "./img/usual.png" - не надо так делать
+    // house.reset ()
 
-    }
+    // }
 
 }
 
@@ -64,7 +72,7 @@ function randomNum (from, to){
 for (let i = 0; i < 10; i++) {
 
     housesArray.push (
-        new house (
+        new House (
             false,
             document.createElement ('img'),
             "./img/usual.png",
@@ -72,7 +80,7 @@ for (let i = 0; i < 10; i++) {
     )
 
     bucketsArray.push (
-        new bucket (
+        new Bucket (
             false,
             document.createElement('img'),
             "./img/full.jpg",
@@ -80,23 +88,27 @@ for (let i = 0; i < 10; i++) {
         )
     )
 
-    // if (bucketsArray[i].isItOnScreen === true) {
-    //         document.getElementsByClassName("images")[i].style.visibility = "visible"
-    //     }
-
-    window.setTimeout(() => {
+    const processVozgoraniya = window.setInterval(() => {
+        //houses on fire
         housesArray[i].firing ();
-        bucketsArray[i].putOutTheFire ();
-        document.getElementsByClassName("images")[i].style.visibility = "visible";
-        housesArray[i].isItOnFire = false;
-        console.log (housesArray[i].isItOnFire)
-        }, randomNum (1000,9000));
-     
-    // if (housesArray[i].isItOnFire === true) {
-    //     bucketsArray[i].putOutTheFire ();
-    //     housesArray[i].isItOnFire = false
-    // }
-              
+
+        setTimeout (() => {
+            //bucket appears
+            bucketsArray[i].HTMLtag.style.visibility = "visible";
+
+            setTimeout(() => {
+
+                if (housesArray[i]) {
+                //bucket disappears, house goes out 
+                bucketsArray[i].HTMLtag.style.visibility = "hidden";
+                housesArray[i].putOutTheFire();
+                }
+            }, 2000)
+
+        }, 2000)
+        
+    }, randomNum (1000,9000));
+       
         //add elements to arrays
         housesPlace.appendChild (housesArray[i].HTMLtag)
         bucketsPlace.appendChild (bucketsArray[i].HTMLtag)
